@@ -8,7 +8,7 @@ public class KellybisServlet extends HttpServlet {
 		resp.setContentType("text/html");
 		//1
 		int r=50;
-		double pi =3.1415;
+		double pi =Math.PI;
 		double area =pi*r*r;
 		String line1= new String("Calculation 1: Area of circle with radius "+r+" is " +area+"square-cm.");
 		
