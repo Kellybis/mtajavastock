@@ -22,7 +22,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	
 	<servlet-mapping>
 		<servlet-name>StockDetailsServlet</servlet-name>
-		<url-pattern>/StockDetailsServlet</url-pattern>
+		<url-pattern>/stockDetailsServlet</url-pattern>
 	</servlet-mapping>
 	
 

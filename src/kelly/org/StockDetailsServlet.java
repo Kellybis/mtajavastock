@@ -16,9 +16,6 @@ public class StockDetailsServlet extends HttpServlet{
 		throws ServletException, IOException {
 		resp.setContentType("text/html");
 		
-	
-		
-		
 		//PIH
 		Stock stockDetails1 = new Stock() ;
 		stockDetails1.setSymbol("PIH");
@@ -26,7 +23,7 @@ public class StockDetailsServlet extends HttpServlet{
 		stockDetails1.setBid(13.1f);
 		
 		Calendar c = Calendar.getInstance();
-		c.set(2014, 10, 15);
+		c.set(2014, 10, 15, 0, 0, 0);
 		Date d1 = c.getTime();
 		stockDetails1.setDate(c.getTime());
 		
@@ -41,7 +38,7 @@ public class StockDetailsServlet extends HttpServlet{
 		stockDetails2.setBid(5.78f);
 		
 		c = Calendar.getInstance();
-		c.set(2014, 10, 15);
+		c.set(2014, 10, 15, 0, 0, 0);
 		Date date2 = c.getTime();
 		stockDetails2.setDate(date2);
 		
@@ -55,7 +52,7 @@ public class StockDetailsServlet extends HttpServlet{
 		stockDetails3.setBid(31.2f);
 		
 		c = Calendar.getInstance();
-		c.set(2014, 10, 15);
+		c.set(2014, 10, 15, 0, 0, 0);
 		Date date3 = c.getTime();
 		stockDetails3.setDate(date3);
 		
