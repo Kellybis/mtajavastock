@@ -14,6 +14,17 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>KellybisServlet</servlet-name>
 		<url-pattern>/KellybisServlet</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>StockDetailsServlet</servlet-name>
+		<servlet-class>kelly.org.StockDetailsServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>StockDetailsServlet</servlet-name>
+		<url-pattern>/StockDetailsServlet</url-pattern>
+	</servlet-mapping>
+	
 
 		
 	<welcome-file-list>
