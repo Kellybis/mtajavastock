@@ -6,7 +6,7 @@ public class Portfolio {
 	
 	public static final int MAX_PORTFOLIO_SIZE = 5 ;
 	
-	private String title = "Show Portfolio";
+	private String title = "Portfolio #1";
 	private Stock[] stocks;
 	private StockStatus[] stocksStatus;
 	private int portfolioSize = 0;
