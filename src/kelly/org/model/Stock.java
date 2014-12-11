@@ -1,4 +1,10 @@
-package kelly.org;
+package kelly.org.model;
+
+/**
+ * defining the stock parameters
+ * @author Kelly
+ *
+ */
 
 public class Stock {
 	
@@ -7,6 +13,19 @@ public class Stock {
 	private float  Bid;
 	private java.util.Date date;
 	
+	/**C'tor*/
+	public Stock(Stock stock){
+		
+		setSymbol(stock.getSymbol());
+		setAsk(stock.getAsk());
+		setBid(stock.getBid());
+		setDate(stock.getDate());
+	}
+	
+	public Stock() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getSymbol() {
 		return symbol;
 	}
@@ -39,6 +58,14 @@ public class Stock {
 		this.date = date;
 	}
 	
+	/**
+	 * the method returns in html
+	 * in bold : the stock's title and symbol
+	 * not in bold : the value of the stock
+	 * with spaces 
+	 * Kelly Bismuth . December 2014
+	 * @return
+	 */
 	public String getHtmlDescription(){
 		String res = " <b>Symbol</b> :" + getSymbol() + " <b>Ask </b>: "+ getAsk() + "<b> Bid </b> : "+ getBid() + " <b>Date</b> : " +getDate()+"<br>";
 		return res;
