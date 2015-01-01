@@ -11,36 +11,23 @@ import kelly.org.model.Portfolio;
 import kelly.org.model.Stock;
 import kelly.org.service.PortfolioService;
 
+@SuppressWarnings("serial")
+
 public class PortfolioServlet extends HttpServlet{
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-	throws ServletException, IOException {
+	throws IOException {
 	resp.setContentType("text/html");
 	
 	PortfolioService portfolioService = new PortfolioService();
-	Portfolio portfolio = portfolioService.getPortfolio();
-	Stock[] stocks = portfolio.getStocks();
-	
-	Portfolio portfolio2= new Portfolio(portfolio);
-	
-	portfolio2.setTitle("Portfolio#2");
-	
-	portfolio2.getStocks()[2].setBid((float) 55.55);
+	Portfolio portfolio1 = portfolioService.getPortfolio();
+	Portfolio portfolio2= new Portfolio(portfolio1);
 	
    /**
-    * Print portfolio details
+    * Print portfolio1 details
     */
-	resp.getWriter().println(portfolio.getHtmlString());
+	resp.getWriter().println(portfolio1.getHtmlString());
 	
-	/**
-	 * print portfolio2 details
-	 */
-	resp.getWriter().println(portfolio2.getHtmlString());
-
 	}
-
-	private void setTitle(String title) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 }
