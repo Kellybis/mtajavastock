@@ -13,21 +13,23 @@ import kelly.org.service.PortfolioService;
 
 @SuppressWarnings("serial")
 
-public class PortfolioServlet extends HttpServlet{
+public class PortfolioServlet extends HttpServlet {
+	
+	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
+		resp.setContentType("text/html");
+		
+		PortfolioService portfolioService = new PortfolioService();
+		Portfolio portfolio1 = portfolioService.getPortfolio();
+		
 
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-	throws IOException {
-	resp.setContentType("text/html");
-	
-	PortfolioService portfolioService = new PortfolioService();
-	Portfolio portfolio1 = portfolioService.getPortfolio();
-	Portfolio portfolio2= new Portfolio(portfolio1);
-	
-   /**
-    * Print portfolio1 details
-    */
-	resp.getWriter().println(portfolio1.getHtmlString());
-	
+		
+		/**
+		 * print portfolio1 details
+		 *Kelly Bismuth , December 2014.
+		 */
+	    resp.getWriter().println(portfolio1.getHtmlString());
+
+	    
 	}
-	
 }

@@ -8,61 +8,65 @@ import java.sql.Date;
  */
 
 public class Stock {
-	
-	private String symbol;
-	private float ask;
-	private float  bid;
-	private java.util.Date date;
-	
+	protected String symbol;
+	protected float ask; 
+	protected float bid; 
+	protected java.util.Date date;
 	
 	public String getSymbol() {
- 		return symbol;
- 	}
- 	public void setSymbol(String symbol) {
- 		this.symbol = symbol;
- 	}
- 	public float getAsk() {
- 		return ask;
- 	}
- 	public void setAsk(float ask) {
- 		this.ask = ask;
- 	}
- 	public float getBid() {
- 		return bid;
- 	}
- 	public void setBid(float bid) {
- 		this.bid = bid;
- 	}
- 	public java.util.Date getDate() {
- 		return date;
- 	}
- 	public void setDate(java.util.Date date) {
- 		this.date = date;
- 	}  
+		return symbol;
+	}
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
+	}
+	public float getAsk() {
+		return ask;
+	}
+	public void setAsk(float ask) {
+		this.ask = ask;
+	}
+	public float getBid() {
+		return bid;
+	}
+	public void setBid(float bid) {
+		this.bid = bid;
+	}
+	public java.util.Date getDate() {
+		return date;
+	}
+	public void setDate(java.util.Date date) {
+		this.date = date;
+	}  
+	
 	
 	/**
-	 * the method returns in html
-	 * in bold : the stock's title and symbol
-	 * not in bold : the value of the stock
-	 * with spaces 
-	 * Kelly Bismuth . December 2014
+	 * the method returns in html: 
+	 * in bold: stock name
+	 * not in bold - the value of the Stock
+	 * with spaces
+	 * Kelly Bismuth. December 2014
 	 * @return
 	 */
 	public String getHtmlDescription(){
-		String res = " <b>Symbol</b> :" + getSymbol() + " <b>Ask </b>: "+ getAsk() + "<b> Bid </b> : "+ getBid() + " <b>Date</b> : " +getDate()+"<br>";
+		String res= "<b>Stock Symbol</b>: " +getSymbol()+" <b>Ask</b>: " + getAsk() + " <b>Bid: </b>"+ getBid()+ " <b>Date:</b> "+ getDate() + "<br>";
 		return res;
+				
+	}
+	/**
+	 * copy c'tor of Stock
+	 * @param stock
+	 */
+	public Stock(Stock stock){
+		setSymbol(stock.getSymbol());
+		setAsk(stock.getAsk());
+		setBid(stock.getBid());
+		date=new Date (stock.date.getTime());
 		
 	}
-	public Stock(Stock stock){
- 		setSymbol(stock.getSymbol());
- 		setAsk(stock.getAsk());
- 		setBid(stock.getBid());
- 		date=new Date (stock.date.getTime());
- 		
- 	}
- 	public Stock() {
- 		// TODO Auto-generated constructor stub
- 	}
- }
-
-
+	public Stock() {
+		// TODO Auto-generated constructor stub
+	}
+	public Stock(float ask2, float bid2, String symbol2, Date date2) {
+		// TODO Auto-generated constructor stub
+	}
+}
