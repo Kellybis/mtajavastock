@@ -6,10 +6,11 @@ import java.util.Date;
 import kelly.org.model.*;
 import kelly.org.servlet.*;
 import kelly.org.model.Portfolio;
+import kelly.org.exception.*;
 
 public class PortfolioService {
 
-	public Portfolio getPortfolio(){
+	public Portfolio getPortfolio() throws StockAlreadyExistsException, PortfolioFullException , BalanceException , StockNotExistException {
 		
 		Portfolio myPortfolio = new Portfolio();
 		myPortfolio.setTitle("Exercise 8 ");
