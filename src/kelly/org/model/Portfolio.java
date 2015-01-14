@@ -87,16 +87,19 @@ public class Portfolio {
 	public void addStock(Stock stock) throws PortfolioFullException, StockAlreadyExistsException{
 		
 		for(int i=0;i<portfolioSize;i++){
+			
 			if(stock.getSymbol().equals(stocksStatus[i].getSymbol())){
-				System.out.println("you already have "+stock.getSymbol()+" stock, please enter another stock symbol.");
 				
-				break;
+				System.out.println("You already have "+stock.getSymbol()+" stock, please enter another stock symbol.");
+				throw new StockAlreadyExistsException(stock.getSymbol());
+				
 			}
 		}
 
 		if (portfolioSize >= (MAX_PORTFOLIO_SIZE)){
 
-			System.out.println("can't add new stock,portfolio can only have "+ MAX_PORTFOLIO_SIZE+" stocks!");
+			System.out.println("Can't add new stock,portfolio can only have "+ MAX_PORTFOLIO_SIZE+" stocks!");
+			throw new PortfolioFullException();
 			}
 		
 
@@ -115,28 +118,30 @@ public class Portfolio {
 		}
 	}
 
-	public void removeStock (String symbol) throws StockNotExistException{
+	public void removeStock (String symbol) throws StockNotExistException {
 
 		if (placeOfStock(symbol)== -2){
+			
 			System.out.println("The stock "+symbol+ " doesn't exsit in your portfolio. Please enter a valid stock symbol. ");
+			throw new StockNotExistException(symbol);
 		
 		}
 		
-		else if (placeOfStock(symbol)!= -2)
-		{
-			sellStock(symbol, -1);
+		else if (placeOfStock(symbol)!= -2){
+			
+			sellStock(symbol , -1);
 
-			if(placeOfStock(symbol)!= (portfolioSize-1))
-			{
+			if(placeOfStock(symbol)!= (portfolioSize-1)){
+				
 				stocksStatus[placeOfStock(symbol)]=stocksStatus[portfolioSize-1];
 				stocksStatus[portfolioSize-1]=null;
 			}
 			
-			else if(placeOfStock(symbol)==(portfolioSize-1))
-			{
+			else if(placeOfStock(symbol)==(portfolioSize-1)){
 				 
 				stocksStatus[portfolioSize-1]=null;
 			}
+			
 			portfolioSize--;
 			System.out.println("Stock " + symbol +" removed successfuly!");
 			 
@@ -148,11 +153,11 @@ public class Portfolio {
 	 * this method sells  stocks.
 	 * @return
 	 */
-	public void sellStock(String symbol, int quantity)
-	{
+	public void sellStock(String symbol, int quantity) throws StockNotExistException {
 		
 		if(placeOfStock(symbol)==-2){
 			System.out.println("There is no stock with that name , please enter a valid name. ");
+			throw new StockNotExistException(symbol);
 			 
 		}
 		
@@ -178,7 +183,8 @@ public class Portfolio {
 		}
 		
 		else if(quantity<(-1)){
-			System.out.println("this quantity is not legal, please enter a quantity bigger than 0");
+			System.out.println("This quantity is not legal, please enter a quantity bigger than 0");
+			
 		
 		}
 		
@@ -188,22 +194,27 @@ public class Portfolio {
 	 * this method buys stocks.
 	 * @return
 	 */
-	public void buyStock(String symbol,int quantity) throws BalanceException{
+	public void buyStock(String symbol,int quantity) throws BalanceException,StockNotExistException{
 	
 		if(placeOfStock(symbol)==-2){
 			
 			System.out.println("There is no stock with that name, please enter valid name. ");
+			throw new StockNotExistException(symbol);
 			
 		}
+		
 		if(quantity<-1){
 			
 			System.out.println("This quantity is not legal, please enter a quantity bigger than 0");
+			
 			
 		}
 
 		else if(balance<stocksStatus[placeOfStock(symbol)].getAsk()*quantity){
 			
 			System.out.println("Not enough balance to complete purchase");
+			throw new BalanceException();
+
 			
 		}
 		

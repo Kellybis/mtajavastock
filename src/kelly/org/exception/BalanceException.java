@@ -12,7 +12,7 @@ public class BalanceException extends Exception {
 
 	public BalanceException() {
 		
-		super(" Negative balance " );
+		super(" You don't have enough monney to buy stock ! " );
 	}
 		  
 }

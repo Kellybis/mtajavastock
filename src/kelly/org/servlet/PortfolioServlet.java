@@ -20,26 +20,24 @@ public class PortfolioServlet extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException,ServletException {
-		resp.setContentType("text/html");
-		
-		PortfolioService portfolioService = new PortfolioService();
-		Portfolio portfolio1;
 		try {
-			portfolio1 = portfolioService.getPortfolio();
-		} catch (StockAlreadyExistsException | PortfolioFullException
-				| BalanceException | StockNotExistException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		try {
+		      resp.setContentType("text/html");
+		      PortfolioService portfolioService = new PortfolioService();
+		      Portfolio portfolio1;
+			  portfolio1 = portfolioService.getPortfolio();
+			  resp.getWriter().println(portfolio1.getHtmlString());
 			
-			portfolio1 = portfolioService.getPortfolio();
-			resp.getWriter().println(portfolio1.getHtmlString());
+		    }
+		
+		catch ( Exception e){
+			
+			 resp.getWriter().println(e.getMessage());
 		}
+			
+  }
 		 
 	
-		catch (PortfolioFullException e) {
+		/*catch (PortfolioFullException e) {
 			resp.getWriter().println("Dude - your portfolio is full!");
 		}
 		catch(StockAlreadyExistsException ee) {
@@ -49,11 +47,10 @@ public class PortfolioServlet extends HttpServlet {
 			resp.getWriter().println("Negative Balance!");
 		}
 		catch (StockNotExistException eeee){
-			resp.getWriter().println("The stock doesn't exist!");
+			resp.getWriter().println("The stock doesn't exist!");*/
 			
-		}
-	}
 }
+
 
 	
 	   
