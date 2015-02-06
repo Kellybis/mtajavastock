@@ -1,119 +1,209 @@
 package kelly.org.service;
 
+import kelly.org.dto.PortfolioTotalStatus;
+import kelly.org.exception.BalanceException;
+import kelly.org.exception.IllegalQuantityException;
+import kelly.org.exception.PortfolioFullException;
+import kelly.org.exception.StockAlreadyExistsException;
+import kelly.org.exception.StockNotExistException;
+import kelly.org.exception.SymbolNotFoundInNasdaq;
+import kelly.org.model.Portfolio;
+import kelly.org.model.Stock;
+import kelly.org.model.StockStatus;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
-import kelly.org.model.*;
-import kelly.org.servlet.*;
-import kelly.org.model.Portfolio;
-import kelly.org.exception.*;
-
+/**
+ * @author hanan.gitliz@gmail.com
+ */
 public class PortfolioService {
 
-	public Portfolio getPortfolio() throws StockAlreadyExistsException, PortfolioFullException , BalanceException , StockNotExistException {
-		
-		Portfolio myPortfolio = new Portfolio();
-		myPortfolio.setTitle("Exercise 9 ");
-		myPortfolio.updateBalance(10000);
-		
-		//1
-		Stock Stock1=new Stock();
-		Stock1.setSymbol("PIH");
-		Stock1.setAsk(10f);
-		Stock1.setBid(8.5f);
-		
-		Calendar c =Calendar.getInstance();
-		c.set(2014, 11, 15, 0, 0,0);
-		Date date=c.getTime();
-	    Stock1.setDate(date);
-		myPortfolio.addStock(Stock1);
-		
-		//2
-		Stock Stock2=new Stock();
-		Stock2.setSymbol("AAL");
-		Stock2.setAsk(30f);
-		Stock2.setBid(25.5f);
+	private final static Logger log = Logger.getLogger(PortfolioService.class
+			.getSimpleName());
 
-		Calendar d =Calendar.getInstance();
-		d.set(2014, 11, 15, 0, 0,0);
-		Date date2=d.getTime();
-		Stock2.setDate(date2);
-		myPortfolio.addStock(Stock2);
-		
-		//3
-		Stock Stock3=new Stock();
-		Stock3.setSymbol("CAAS");
-		Stock3.setAsk(20f);
-		Stock3.setBid(15.5f);
+	private Portfolio portfolio;
 
-		Calendar e =Calendar.getInstance();
-		e.set(2014, 11, 15, 0, 0,0);;
-		Date date3=c.getTime();
-		Stock3.setDate(date3);
-		myPortfolio.addStock(Stock3);
-		
-		/*
-		 I add this stocks (4,5,6) to check the exceptions
-		 */
-		
-		//4
-			    Stock Stock4=new Stock();
-				Stock4.setSymbol("SHIRAN");
-				Stock4.setAsk(30f);
-				Stock4.setBid(25.5f);
+	public enum OPERATION {
+		ADD, REMOVE, SELL, BUY
+	}
 
-				Calendar d1 =Calendar.getInstance();
-				d1.set(2014, 11, 15, 0, 0,0);
-				Date date21=d1.getTime();
-				Stock2.setDate(date21);
-				myPortfolio.addStock(Stock4);
-		
-				myPortfolio.buyStock("PIH", 20);
-				myPortfolio.buyStock("AAL", 30);
-				myPortfolio.buyStock("CAAS", 40);
-				
-		//5
-			    Stock Stock5=new Stock();
-				Stock5.setSymbol("KELLY");
-				Stock5.setAsk(30f);
-				Stock5.setBid(25.5f);
-		
-				Calendar d11 =Calendar.getInstance();
-				d11.set(2014, 11, 15, 0, 0,0);
-				Date date211=d11.getTime();
-				Stock2.setDate(date211);
-				myPortfolio.addStock(Stock5);
-		
-				myPortfolio.buyStock("PIH", 20);
-				myPortfolio.buyStock("AAL", 30);
-				myPortfolio.buyStock("CAAS", 40);
-		
-		//6
-		/*  --> portfolioFullException
-	    Stock Stock6=new Stock();
-		Stock6.setSymbol("ROTEM");
-		Stock6.setAsk(30f);
-		Stock6.setBid(25.5f);
+	private static final int DAYS_BACK = 30;
+	private static PortfolioService instance = new PortfolioService();
 
-		Calendar d111 =Calendar.getInstance();
-		d111.set(2014, 11, 15, 0, 0,0);
-		Date date2111=d111.getTime();
-		Stock2.setDate(date2111);
-		myPortfolio.addStock(Stock6);
-		*/
+	public static PortfolioService getInstance() {
+		return instance;
+	}
 
-		myPortfolio.buyStock("PIH", 20);
-		myPortfolio.buyStock("AAL", 30);
-		myPortfolio.buyStock("CAAS", 40);
-		myPortfolio.sellStock("AAL", -1);
-		myPortfolio.removeStock("CAAS");
-		
-		
-		/*Add to check exceptions*/
-		//myPortfolio.buyStock("ABC", 20); --> stockNotExistException 
-		//myPortfolio.buyStock("CAAS", 1000000); --> balanceException
-		myPortfolio.addStock(Stock1); //--> stockAlreadyExistExeption
-	
-		return myPortfolio;
+	private DatastoreService datastoreService;
+
+	private PortfolioService() {
+		datastoreService = DatastoreService.getInstance();
+	}
+
+	public Portfolio getPortfolio() {
+		if (portfolio == null) {
+			portfolio = datastoreService.loadPortfolilo();
+		}
+
+		return portfolio;
+	}
+
+	/**
+	 * Updates Portfolio with algo recommendation.
+	 */
+	public void update() {
+		StockStatus[] stocks = getPortfolio().getStocks();
+		List<String> symbols = new ArrayList<>(Portfolio.getMaxPortfolioSize());
+		for (StockStatus stockStatus : stocks) {
+			symbols.add(stockStatus.getSymbol());
+		}
+
+		List<StockStatus> update = new ArrayList<>(
+				Portfolio.getMaxPortfolioSize());
+		List<Stock> currentStocksList;
+		try {
+			currentStocksList = MarketService.getInstance().getStocks(symbols);
+			for (Stock stock : currentStocksList) {
+				update.add(new StockStatus(stock));
+			}
+
+			datastoreService.saveToDataStore(update);
+
+			// load fresh data from database.
+			portfolio = null;
+		} catch (SymbolNotFoundInNasdaq e) {
+			log.severe(e.getMessage());
+		}
+	}
+
+	public PortfolioTotalStatus[] getPortfolioTotalStatus() {
+
+		Portfolio portfolio = getPortfolio();
+		Map<Date, Float> map = new HashMap<>();
+
+		// get stock status from db.
+		Stock[] stocks = portfolio.getStocks();
+		for (int i = 0; i < stocks.length; i++) {
+			Stock stock = stocks[i];
+
+			if (stock != null) {
+				List<StockStatus> history = datastoreService.getStockHistory(
+						stock.getSymbol(), DAYS_BACK);
+
+				for (int j = 0; j < history.size(); j++) {
+					StockStatus curr = history.get(j);
+					Date date = dateMidnight(curr.getDate());
+					float value = curr.getBid() * curr.getStockQuantity();
+
+					Float total = map.get(date);
+					if (total == null) {
+						total = value;
+					} else {
+						total += value;
+					}
+
+					map.put(date, value);
+				}
+			}
+		}
+
+		PortfolioTotalStatus[] ret = new PortfolioTotalStatus[map.size()];
+
+		int index = 0;
+		// create dto objects
+		for (Date date : map.keySet()) {
+			ret[index] = new PortfolioTotalStatus(date, map.get(date));
+			index++;
+		}
+
+		// sort by date ascending.
+		Arrays.sort(ret);
+
+		return ret;
+	}
+
+	public void setTitle(String title) {
+		Portfolio portfolio = getPortfolio();
+		portfolio.setTitle(title);
+		datastoreService.updatePortfolio(portfolio);
+
+		flush();
+	}
+
+	public void setBalance(float newBalance) throws BalanceException {
+		Portfolio portfolio = getPortfolio();
+		portfolio.updateBalance(newBalance);
+		datastoreService.updatePortfolio(portfolio);
+
+		flush();
+	}
+
+	public void addStock(String symbol) throws StockAlreadyExistsException,
+			PortfolioFullException, StockNotExistException,
+			SymbolNotFoundInNasdaq {
+		Portfolio portfolio = getPortfolio();
+
+		// get current symbol values from nasdaq.
+		Stock stock = MarketService.getInstance().getStock(symbol);
+
+		if (stock != null) {
+
+			// first thing, add it to portfolio.
+			portfolio.addStock(stock);
+
+			// second thing, save the new stock to the database.
+			datastoreService.saveStock(portfolio.findBySymbol(symbol));
+
+			flush();
+		}
+	}
+
+	public void buyStock(String symbol, int quantity) throws BalanceException,
+			StockNotExistException {
+		getPortfolio().buyStock(symbol, quantity);
+		flush();
+	}
+
+	public void sellStock(String symbol, int quantity)
+			throws StockNotExistException, IllegalQuantityException {
+		getPortfolio().sellStock(symbol, quantity);
+		flush();
+	}
+
+	public void removeStock(String symbol) throws StockNotExistException,
+			IllegalQuantityException {
+		getPortfolio().removeStock(symbol);
+		flush();
+	}
+
+	private void flush() {
+		// update db
+		datastoreService.updatePortfolio(getPortfolio());
+		// now make next call to portfolio to fetch data from updated db.
+		portfolio = null;
+	}
+
+	/**
+	 * Transform a given date to start day date.
+	 * 
+	 * @param date
+	 * @return
+	 */
+	private Date dateMidnight(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
+		return cal.getTime();
 	}
 }

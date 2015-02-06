@@ -1,6 +1,8 @@
 package kelly.org.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,51 +11,36 @@ import javax.servlet.http.HttpServletResponse;
 
 import kelly.org.model.Portfolio;
 import kelly.org.model.Stock;
+import kelly.org.model.StockStatus;
 import kelly.org.service.PortfolioService;
+import kelly.org.dto.PortfolioDto;
+import kelly.org.dto.PortfolioTotalStatus;
 import kelly.org.exception.*;
 
-@SuppressWarnings("serial")
+public class PortfolioServlet extends AbstractAlgoServlet {
 
-public class PortfolioServlet extends HttpServlet {
-	
 	private static final long serialVersionUID = 1L;
-	
+
+	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws IOException,ServletException {
-		try {
-		      resp.setContentType("text/html");
-		      PortfolioService portfolioService = new PortfolioService();
-		      Portfolio portfolio1;
-			  portfolio1 = portfolioService.getPortfolio();
-			  resp.getWriter().println(portfolio1.getHtmlString());
-			
-		    }
-		
-		catch ( Exception e){
-			
-			 resp.getWriter().println(e.getMessage());
+			throws ServletException, IOException {
+
+		resp.setContentType("application/json");
+
+		PortfolioTotalStatus[] totalStatus = portfolioService
+				.getPortfolioTotalStatus();
+		StockStatus[] stockStatusArray = portfolioService.getPortfolio()
+				.getStocks();
+		List<StockStatus> stockStatusList = new ArrayList<>();
+		for (StockStatus ss : stockStatusArray) {
+			if (ss != null)
+				stockStatusList.add(ss);
 		}
-			
-  }
-		 
-	
-		/*catch (PortfolioFullException e) {
-			resp.getWriter().println("Dude - your portfolio is full!");
-		}
-		catch(StockAlreadyExistsException ee) {
-			resp.getWriter().println("Dude - stock already exists.");			
-		}
-		catch (BalanceException eee){
-			resp.getWriter().println("Negative Balance!");
-		}
-		catch (StockNotExistException eeee){
-			resp.getWriter().println("The stock doesn't exist!");*/
-			
+
+		PortfolioDto pDto = new PortfolioDto();
+		pDto.setTitle(portfolioService.getPortfolio().getTitle());
+		pDto.setTotalStatus(totalStatus);
+		pDto.setStockTable(stockStatusList);
+		resp.getWriter().print(withNullObjects().toJson(pDto));
+	}
 }
-
-
-	
-	   
-
-	
-
