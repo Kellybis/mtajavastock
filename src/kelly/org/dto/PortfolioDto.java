@@ -1,10 +1,8 @@
 package kelly.org.dto;
 
-
 import kelly.org.model.StockStatus;
 
 import java.util.List;
-
 
 public class PortfolioDto {
 
@@ -15,7 +13,7 @@ public class PortfolioDto {
 	public String getTitle() {
 		return title;
 	}
-	
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -23,7 +21,7 @@ public class PortfolioDto {
 	public PortfolioTotalStatus[] getTotalStatus() {
 		return totalStatus;
 	}
-	
+
 	public void setTotalStatus(PortfolioTotalStatus[] totalStatus) {
 		this.totalStatus = totalStatus;
 	}
@@ -31,7 +29,7 @@ public class PortfolioDto {
 	public List<StockStatus> getStockStatusList() {
 		return stockStatusList;
 	}
-	
+
 	public void setStockTable(List<StockStatus> stockStatusList) {
 		this.stockStatusList = stockStatusList;
 	}

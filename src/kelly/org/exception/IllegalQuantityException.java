@@ -1,6 +1,5 @@
 package kelly.org.exception;
 
-
 public class IllegalQuantityException extends Exception {
 
 	private static final long serialVersionUID = 1L;
@@ -8,7 +7,7 @@ public class IllegalQuantityException extends Exception {
 	public IllegalQuantityException() {
 		super("Quantity must be positive!");
 	}
-	
+
 	public IllegalQuantityException(String message) {
 		super(message);
 	}

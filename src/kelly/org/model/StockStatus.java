@@ -17,7 +17,8 @@ public class StockStatus extends Stock {
 		this.recommendation = recommendation;
 		this.stockQuantity = stockQuantity;
 	}
-	public StockStatus(Stock stock){
+
+	public StockStatus(Stock stock) {
 		super(stock);
 		this.recommendation = ALGO_RECOMMENDATION.DO_NOTHING;
 		this.stockQuantity = 0;

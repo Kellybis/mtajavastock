@@ -1,7 +1,5 @@
 package kelly.org.model;
 
-
-
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +21,7 @@ import kelly.org.model.Stock;
 public class Portfolio {
 	// members
 	private final static int MAX_PORTFOLIO_SIZE = 5;
-	
+
 	private String title;
 	private static int portfolioSize = 0;
 	private float balance;
@@ -53,10 +51,11 @@ public class Portfolio {
 			this.stocksStatus[i] = stockStatus[i];
 		}
 	}
+
 	public Portfolio(List<StockStatus> stockStatuses) {
-        for (int i = 0; i < stockStatuses.size() /*portfolioSize*/; i++)
-            this.stocksStatus[i] = stockStatuses.get(i);
-    }
+		for (int i = 0; i < stockStatuses.size() /* portfolioSize */; i++)
+			this.stocksStatus[i] = stockStatuses.get(i);
+	}
 
 	public Portfolio() {
 		setStocksStatus(new StockStatus[MAX_PORTFOLIO_SIZE]);
@@ -103,7 +102,7 @@ public class Portfolio {
 
 		// find the index of symbol
 		for (int i = 0; i < portfolioSize; i++) {
-			if(symbol.equals(this.stocksStatus[i].getSymbol())) {
+			if (symbol.equals(this.stocksStatus[i].getSymbol())) {
 				stockIsExisist = true;
 				StockSymbolIndex = i;
 			}
@@ -141,7 +140,7 @@ public class Portfolio {
 		}
 		// find the index of symbol
 		for (int i = 0; i < portfolioSize; i++) {
-			if(symbol.equals(this.stocksStatus[i].getSymbol())) {
+			if (symbol.equals(this.stocksStatus[i].getSymbol())) {
 				buyStockSucsses = true;
 				stockSymbolIndex = i;
 			}
@@ -182,7 +181,7 @@ public class Portfolio {
 
 		// find stock's index to sell
 		for (int i = 0; i < portfolioSize; i++) {
-			if(symbol.equals(this.stocksStatus[i].getSymbol())) {
+			if (symbol.equals(this.stocksStatus[i].getSymbol())) {
 				sellStock = true;
 				stockSymbolIndex = i;
 			}
